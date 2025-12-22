@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from src.routers.room import router as room
+from src.routers.user import router as user
 from src.db.database import Base,engine
 
 app = FastAPI()
@@ -10,3 +11,4 @@ def on_startup():
     
 
 app.include_router(room)
+app.include_router(user)
