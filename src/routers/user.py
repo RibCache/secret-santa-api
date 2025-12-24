@@ -9,23 +9,26 @@ router = APIRouter()
 
 @router.post("/rooms/{room_id}/users", response_model=UserResponse)
 def user_create(room_id: int, payload: UserCreate, db: Session = Depends(get_db)):
-    created_user = create_user(room_id=room_id, payload=payload, db=db)
+    try:
+        created_user = create_user(room_id=room_id, payload=payload, db=db)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
     
     if not created_user:
         raise HTTPException(status_code=404)
     
     return created_user
 
-@router.get("/users{user_id}/target")
+@router.get("/users/{user_id}/target")
 def get_my_target(user_id: int, db: Session = Depends(get_db)):
     me = db.query(User).filter(User.id == user_id).first()
     if not me:
         raise HTTPException(status_code=404, detail="Пользователь не найден")
     
-    target_user = db.query(User).filter(User.id == me.target_id).first()
-    
     if me.target_id is None:
         return {"message": "Игра еще не началась." }
+    
+    target_user = db.query(User).filter(User.id == me.target_id).first()
     
     return {
         "your_name": me.username,

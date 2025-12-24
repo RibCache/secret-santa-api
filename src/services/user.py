@@ -9,6 +9,14 @@ def create_user(room_id: int, payload: UserCreate, db: Session):
     if not room:
         return None
     
+    existing_user = db.query(data.User).filter(
+        data.User.room_id == room_id,
+        data.User.username == payload.username
+    ).first()
+
+    if existing_user:
+        raise ValueError(f"Пользователь с именем '{payload.username}' уже есть в этой комнате.")
+    
     user = data.User(username = payload.username, room_id = room_id)
     
     db.add(user)
