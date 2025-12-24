@@ -17,6 +17,7 @@ class RoomResponse(BaseModel):
     id: int
     username: str
     room_id: int
+    target_id: int | None = None
     
     class Config:
         from_attributes = True
