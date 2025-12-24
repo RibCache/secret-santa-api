@@ -10,6 +10,7 @@ class Room(Base):
     room_name: Mapped[str] = mapped_column()
     
     users: Mapped[List["User"]] = relationship(back_populates="room")
+    
 class User(Base):
     __tablename__ = "users"
     
@@ -17,3 +18,4 @@ class User(Base):
     username: Mapped[str] = mapped_column()
     room_id: Mapped[int] = mapped_column(ForeignKey("rooms.id"))
     room: Mapped["Room"] = relationship(back_populates="users")
+    target_id: Mapped[int] = mapped_column(nullable=True, default=None)
